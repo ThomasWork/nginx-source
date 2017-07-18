@@ -116,25 +116,25 @@ typedef struct {
     u_char                     addr[NGX_SOCKADDR_STRLEN + 1];
 } ngx_http_listen_opt_t;
 
-
+//一个request 的处理会经历如下12 个阶段
 typedef enum {
-    NGX_HTTP_POST_READ_PHASE = 0,
+    NGX_HTTP_POST_READ_PHASE = 0,//读取请求阶段
 
-    NGX_HTTP_SERVER_REWRITE_PHASE,
+    NGX_HTTP_SERVER_REWRITE_PHASE,//Server 请求地址重写阶段
 
-    NGX_HTTP_FIND_CONFIG_PHASE,
-    NGX_HTTP_REWRITE_PHASE,
-    NGX_HTTP_POST_REWRITE_PHASE,
+    NGX_HTTP_FIND_CONFIG_PHASE,//配置查找阶段
+    NGX_HTTP_REWRITE_PHASE,//Location 请求地址重写阶段
+    NGX_HTTP_POST_REWRITE_PHASE,//请求地址重写提交阶段
 
-    NGX_HTTP_PREACCESS_PHASE,
+    NGX_HTTP_PREACCESS_PHASE,//访问权限检查准备阶段
 
-    NGX_HTTP_ACCESS_PHASE,
-    NGX_HTTP_POST_ACCESS_PHASE,
+    NGX_HTTP_ACCESS_PHASE,//请求权限检查阶段
+    NGX_HTTP_POST_ACCESS_PHASE,//访问权限检查提交阶段
 
-    NGX_HTTP_TRY_FILES_PHASE,
-    NGX_HTTP_CONTENT_PHASE,
+    NGX_HTTP_TRY_FILES_PHASE,//配置项try_files 处理阶段
+    NGX_HTTP_CONTENT_PHASE,//产生内容阶段
 
-    NGX_HTTP_LOG_PHASE
+    NGX_HTTP_LOG_PHASE//日志处理阶段
 } ngx_http_phases;
 
 typedef struct ngx_http_phase_handler_s  ngx_http_phase_handler_t;

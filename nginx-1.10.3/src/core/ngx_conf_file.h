@@ -74,11 +74,13 @@
 
 #define NGX_MAX_CONF_ERRSTR  1024
 
-//表示一个配置项目
+//src/core/ngx_conf_file.h
+//一个模块可以配置多个参数，这些参数存放在一个ngx_command_s数组中
+//ngx_command_s用来指定每个参数的特性，如类型，可以接受几个参数等
 struct ngx_command_s {
     ngx_str_t             name;	//配置项名称，如gzip
-    ngx_uint_t            type;	//配置项类型，type 将指定配置项可以出现的位置。例如，出现在server{}或location{}中
-    char               *(*set)(ngx_conf_t *cf, ngx_command_t *cmd, void *conf); //当出现了和name相同的配置项，调用该函数进行处理
+    ngx_uint_t            type;	//指定配置项可以出现的位置，如server 或location，以及参数个数
+    char               *(*set)(ngx_conf_t *cf, ngx_command_t *cmd, void *conf); //如何解析读取到的参数，当出现了和name相同的配置项，调用该函数进行处理
     ngx_uint_t            conf;
     ngx_uint_t            offset;
     void                 *post;//配置项读取完成之后的处理方法，必须是ngx_conf_post_t类型的指针

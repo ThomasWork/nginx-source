@@ -24,12 +24,12 @@ typedef struct {
     void        **loc_conf;
 } ngx_http_conf_ctx_t;
 
-//ngx_http_mudule_t
-//它是很多函数的指针，用来对配置进行管理
+//src/http/ngx_http_mudule_t
+//提供了一组回调函数指针，用来对配置进行管理
 //但是调用顺序不一定是这样的
 typedef struct {
-    ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);//在解析http{} 内的配置项之前的回调
-    ngx_int_t   (*postconfiguration)(ngx_conf_t *cf); //在解析http{}内的配置项之后的回调
+    ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);//在创建和读取该模块的配置信息之前被调用
+    ngx_int_t   (*postconfiguration)(ngx_conf_t *cf); //在之后调用
 
     void       *(*create_main_conf)(ngx_conf_t *cf);//创建存储http全局配置的结构体
     char       *(*init_main_conf)(ngx_conf_t *cf, void *conf);//
