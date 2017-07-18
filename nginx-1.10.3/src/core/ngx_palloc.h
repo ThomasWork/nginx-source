@@ -50,7 +50,7 @@ struct ngx_pool_large_s {
 //内存池中的数据块
 typedef struct {
     u_char               *last;//当前已经使用内存的末尾，下一次分配从此开始
-    u_char               *end;//内存块结束位置?
+    u_char               *end;//内存块结束位置
     ngx_pool_t           *next;//指向下一块内存
     ngx_uint_t            failed;//分配失败次数
 } ngx_pool_data_t;
