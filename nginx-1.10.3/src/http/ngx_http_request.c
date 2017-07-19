@@ -76,7 +76,7 @@ static char *ngx_http_client_errors[] = {
     "client sent invalid method in HTTP/0.9 request"
 };
 
-
+//一些常用的请求头，
 ngx_http_header_t  ngx_http_headers_in[] = {
     { ngx_string("Host"), offsetof(ngx_http_headers_in_t, host),
                  ngx_http_process_host },
@@ -933,7 +933,7 @@ ngx_http_process_request_line(ngx_event_t *rev)
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, rev->log, 0,
                    "http process request line");
 
-    if (rev->timedout) {
+    if (rev->timedout) {//如果是超时事件，则关闭请求
         ngx_log_error(NGX_LOG_INFO, c->log, NGX_ETIMEDOUT, "client timed out");
         c->timedout = 1;
         ngx_http_close_request(r, NGX_HTTP_REQUEST_TIME_OUT);
@@ -945,9 +945,9 @@ ngx_http_process_request_line(ngx_event_t *rev)
     for ( ;; ) {
 
         if (rc == NGX_AGAIN) {
-            n = ngx_http_read_request_header(r);
+            n = ngx_http_read_request_header(r);//读取数据，可能多次执行
 
-            if (n == NGX_AGAIN || n == NGX_ERROR) {
+            if (n == NGX_AGAIN || n == NGX_ERROR) {//如果返回这两个，说明需要结束处理
                 return;
             }
         }
@@ -1043,7 +1043,7 @@ ngx_http_process_request_line(ngx_event_t *rev)
         }
 
         /* NGX_AGAIN: a request line parsing is still incomplete */
-
+	// 请求行仍然没有完成
         if (r->header_in->pos == r->header_in->end) {
 
             rv = ngx_http_alloc_large_header_buffer(r, 1);
@@ -1385,19 +1385,19 @@ ngx_http_read_request_header(ngx_http_request_t *r)
 
     n = r->header_in->last - r->header_in->pos;
 
-    if (n > 0) {
+    if (n > 0) {//缓冲区中如果有数据，则直接返回
         return n;
     }
 
-    if (rev->ready) {
+    if (rev->ready) {//如果可以读取数据，那么把缓冲区填满
         n = c->recv(c, r->header_in->last,
                     r->header_in->end - r->header_in->last);
     } else {
         n = NGX_AGAIN;
     }
 
-    if (n == NGX_AGAIN) {
-        if (!rev->timer_set) {
+    if (n == NGX_AGAIN) {//如果不可以读取数据
+        if (!rev->timer_set) {//添加一个计时器，如果超时则关闭该连接
             cscf = ngx_http_get_module_srv_conf(r, ngx_http_core_module);
             ngx_add_timer(rev, cscf->client_header_timeout);
         }
@@ -1410,7 +1410,7 @@ ngx_http_read_request_header(ngx_http_request_t *r)
         return NGX_AGAIN;
     }
 
-    if (n == 0) {
+    if (n == 0) {//没有读取到数据，即客户端关闭了连接
         ngx_log_error(NGX_LOG_INFO, c->log, 0,
                       "client prematurely closed connection");
     }
@@ -1444,7 +1444,7 @@ ngx_http_alloc_large_header_buffer(ngx_http_request_t *r,
     if (request_line && r->state == 0) {
 
         /* the client fills up the buffer with "\r\n" */
-
+	//客户端使用大量的回车换行字符填满了buffer，则重置指针
         r->header_in->pos = r->header_in->start;
         r->header_in->last = r->header_in->start;
 
@@ -1497,6 +1497,13 @@ ngx_http_alloc_large_header_buffer(ngx_http_request_t *r,
 
     hc->busy[hc->nbusy++] = b;
 
+	/*
+	因为nginx中，所有的请求头的保存形式都是指针（起始和结束地址），
+	所以一行完整的请求头必须放在连续的内存块中。如果旧的缓冲区不能
+	再放下整行请求头，则分配新缓冲区，并从旧缓冲区拷贝已经读取的部分请求头，
+	拷贝完之后，需要修改所有相关指针指向到新缓冲区。
+	status为0表示解析完一行请求头之后，缓冲区正好被用完，这种情况不需要拷贝
+		 */
     if (r->state == 0) {
         /*
          * r->state == 0 means that a header line was parsed successfully
@@ -1770,7 +1777,9 @@ ngx_http_process_multi_header_lines(ngx_http_request_t *r, ngx_table_elt_t *h,
     return NGX_OK;
 }
 
-
+//该函数主要做了两件事
+//(1)调用ngx_http_find_virtual_server 函数查找虚拟服务配值
+//(2)做一些协议的检查
 ngx_int_t
 ngx_http_process_request_header(ngx_http_request_t *r)
 {

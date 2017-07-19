@@ -463,17 +463,18 @@ ngx_http_init_phase_handlers(ngx_conf_t *cf, ngx_http_core_main_conf_t *cmcf)
         n += cmcf->phases[i].handlers.nelts;
     }
 
+//首先计算需要多少空间(n)，然后一次分配
     ph = ngx_pcalloc(cf->pool,
                      n * sizeof(ngx_http_phase_handler_t) + sizeof(void *));
     if (ph == NULL) {
         return NGX_ERROR;
     }
 
-    cmcf->phase_engine.handlers = ph;
-    n = 0;
+    cmcf->phase_engine.handlers = ph;//真实的执行链
+    n = 0;//初始化n 等于0
 
-    for (i = 0; i < NGX_HTTP_LOG_PHASE; i++) {
-        h = cmcf->phases[i].handlers.elts;
+    for (i = 0; i < NGX_HTTP_LOG_PHASE; i++) {//因为最后一个是NGX_HTTP_LOG_PHASE，所以这里使用它
+        h = cmcf->phases[i].handlers.elts;//指向handlers数组的首地址
 
         switch (i) {
 
@@ -543,7 +544,7 @@ ngx_http_init_phase_handlers(ngx_conf_t *cf, ngx_http_core_main_conf_t *cmcf)
             checker = ngx_http_core_generic_phase;
         }
 
-        n += cmcf->phases[i].handlers.nelts;
+        n += cmcf->phases[i].handlers.nelts;//handlers 个数
 
         for (j = cmcf->phases[i].handlers.nelts - 1; j >=0; j--) {
             ph->checker = checker;

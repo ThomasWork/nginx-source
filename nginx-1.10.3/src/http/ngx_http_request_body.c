@@ -25,7 +25,9 @@ static ngx_int_t ngx_http_request_body_length_filter(ngx_http_request_t *r,
 static ngx_int_t ngx_http_request_body_chunked_filter(ngx_http_request_t *r,
     ngx_chain_t *in);
 
-
+//src/http/Ngx_http_request_body.c
+//nginx 核心不会主动读取请求体，但是提供了ngx_http_read_client_body来读取请求体
+//一些内置模块会调用该函数读取请求体，等到读取完整的请求体才把它向后转发
 ngx_int_t
 ngx_http_read_client_request_body(ngx_http_request_t *r,
     ngx_http_client_body_handler_pt post_handler)
@@ -506,7 +508,7 @@ ngx_http_write_request_body(ngx_http_request_t *r)
     return NGX_OK;
 }
 
-
+//主动丢弃请求体
 ngx_int_t
 ngx_http_discard_request_body(ngx_http_request_t *r)
 {

@@ -16,8 +16,8 @@
 typedef struct {
     void        *elts;//数组的首地址
     ngx_uint_t   nelts;//数组中当前使用了多少个元素
-    size_t       size;//每个元素的尺寸
-    ngx_uint_t   nalloc;//当前分配了多少个元素的空间
+    size_t       size;//每个元素的占多少字节
+    ngx_uint_t   nalloc;//当前分配了多少个元素的空间，如果nelts超过了该值，会扩容，和vector类似
     ngx_pool_t  *pool;//内存池对象
 } ngx_array_t;
 

@@ -13,6 +13,7 @@
 #include <ngx_core.h>
 
 
+//src/core/Ngx_string.h
 //这里使用的方法和LevelDB slice很像，使用指针加长度的方式
 //保存字符串
 typedef struct {

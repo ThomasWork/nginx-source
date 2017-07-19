@@ -12,7 +12,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 
-
+//src/core/Ngx_hash.h
 typedef struct {
     void             *value;
     u_short           len;
@@ -20,6 +20,8 @@ typedef struct {
 } ngx_hash_elt_t;
 
 
+//hash表一旦建立，不能插入和删除
+//虽然采用了"开链"的技术，但是实际上开的是一段连续的空间
 typedef struct {
     ngx_hash_elt_t  **buckets;
     ngx_uint_t        size;

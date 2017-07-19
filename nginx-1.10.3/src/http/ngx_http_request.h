@@ -157,11 +157,11 @@ typedef enum {
     NGX_HTTP_KEEPALIVE_STATE
 } ngx_http_state_e;
 
-
+//保存一个http请求头的结构
 typedef struct {
-    ngx_str_t                         name;
+    ngx_str_t                         name;//如Host , User-Agent
     ngx_uint_t                        offset;
-    ngx_http_header_handler_pt        handler;
+    ngx_http_header_handler_pt        handler;//处理函数
 } ngx_http_header_t;
 
 

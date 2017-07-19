@@ -17,8 +17,9 @@ typedef void *            ngx_buf_tag_t;
 
 typedef struct ngx_buf_s  ngx_buf_t;
 
-//缓冲区的封装，既应用于内存数据也用于磁盘数据
-/
+//src/core/Ngx_buf.h
+//缓冲区的封装，既应用于内存数据也用于磁盘数据，也可能是一些
+//辅助信息指示该如何解析该数据
 struct ngx_buf_s {
     u_char          *pos;     //从pos开始处理数据
     u_char          *last;     //有效的内容到此为止
@@ -57,10 +58,10 @@ struct ngx_buf_s {
     /* STUB */ int   num;
 };
 
-
+//src/core/Ngx_buf.h
 struct ngx_chain_s {
-    ngx_buf_t    *buf;
-    ngx_chain_t  *next;
+    ngx_buf_t    *buf;//实际存放的数据
+    ngx_chain_t  *next;//下一个节点
 };
 
 

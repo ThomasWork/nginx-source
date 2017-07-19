@@ -116,7 +116,9 @@ typedef struct {
     u_char                     addr[NGX_SOCKADDR_STRLEN + 1];
 } ngx_http_listen_opt_t;
 
-//一个request 的处理会经历如下12 个阶段
+//src/http/Ngx_http_core_module.h
+//nginx 良好的模块化特性体现在它对请求处理的多阶段划分
+//一个request 的处理会经历如下11 个阶段
 typedef enum {
     NGX_HTTP_POST_READ_PHASE = 0,//读取请求阶段
 
@@ -143,19 +145,21 @@ typedef ngx_int_t (*ngx_http_phase_handler_pt)(ngx_http_request_t *r,
     ngx_http_phase_handler_t *ph);
 
 struct ngx_http_phase_handler_s {
-    ngx_http_phase_handler_pt  checker;
-    ngx_http_handler_pt        handler;
+    ngx_http_phase_handler_pt  checker;//相同阶段的节点具有相同的checker
+    //在某些阶段的checker函数中，可能根据某些逻辑跳回之前的处理阶段
+    ngx_http_handler_pt        handler;//保存模块处理函数
     ngx_uint_t                 next;
 };
 
 
 typedef struct {
-    ngx_http_phase_handler_t  *handlers;
+    ngx_http_phase_handler_t  *handlers;//执行链
     ngx_uint_t                 server_rewrite_index;
     ngx_uint_t                 location_rewrite_index;
 } ngx_http_phase_engine_t;
 
-
+//src/http/Ngx_http_core_module.h
+//动态数组
 typedef struct {
     ngx_array_t                handlers;
 } ngx_http_phase_t;
@@ -164,7 +168,7 @@ typedef struct {
 typedef struct {
     ngx_array_t                servers;         /* ngx_http_core_srv_conf_t */
 
-    ngx_http_phase_engine_t    phase_engine;
+    ngx_http_phase_engine_t    phase_engine;//保存了处理流程中的函数，处理流程分为多个阶段，每个阶段可以注册多个函数
 
     ngx_hash_t                 headers_in_hash;
 
@@ -185,7 +189,7 @@ typedef struct {
 
     ngx_uint_t                 try_files;       /* unsigned  try_files:1 */
 
-    ngx_http_phase_t           phases[NGX_HTTP_LOG_PHASE + 1];
+    ngx_http_phase_t           phases[NGX_HTTP_LOG_PHASE + 1];//保存了11 个阶段，每个阶段是一个函数指针数组
 } ngx_http_core_main_conf_t;
 
 

@@ -12,7 +12,8 @@
 #ifndef _NGX_QUEUE_H_INCLUDED_
 #define _NGX_QUEUE_H_INCLUDED_
 
-
+//src/core/Ngx_queue.h
+//在实际使用时，首先初始化一个哨兵节点，并使它的prev和next指向自己
 typedef struct ngx_queue_s  ngx_queue_t;
 
 struct ngx_queue_s {
