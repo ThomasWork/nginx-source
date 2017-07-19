@@ -242,7 +242,8 @@
 
 #define NGX_MODULE_V1_PADDING  0, 0, 0, 0, 0, 0, 0, 0
 
-
+//src/core/ngx_dodule.h
+//该结构体用来描述一个模块，如它的名字，属于哪一类，在模块链表中的位置等
 struct ngx_module_s {
     ngx_uint_t            ctx_index;//在自己所属那一类模块中的下标
     ngx_uint_t            index;//在全局的modules 数组中的下标，该数组为指针数组
@@ -255,10 +256,11 @@ struct ngx_module_s {
     ngx_uint_t            version;
     const char           *signature;
 
-    void                 *ctx;
-    ngx_command_t        *commands;
-    ngx_uint_t            type;
+    void                 *ctx;//指向一类模块中公共的上下文结构体，例如：HTTP模块，指向ngx_http_module_t
+    ngx_command_t        *commands;//配置项数组，用来保存nginx.conf中的配置项
+    ngx_uint_t            type;//模块类型，如NGX_HTTP_MODULE，该字段与ctx字段紧密相关
 
+//下面7个函数，会在Nginx启动或者停止的过程中 在特定时间点 进行调用
     ngx_int_t           (*init_master)(ngx_log_t *log);
 
     ngx_int_t           (*init_module)(ngx_cycle_t *cycle);

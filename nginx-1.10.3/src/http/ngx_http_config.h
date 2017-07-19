@@ -31,14 +31,14 @@ typedef struct {
     ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);//在创建和读取该模块的配置信息之前被调用
     ngx_int_t   (*postconfiguration)(ngx_conf_t *cf); //在之后调用
 
-    void       *(*create_main_conf)(ngx_conf_t *cf);//创建存储http全局配置的结构体
-    char       *(*init_main_conf)(ngx_conf_t *cf, void *conf);//
+    void       *(*create_main_conf)(ngx_conf_t *cf);//创建存储main级别（http）配置的结构体
+    char       *(*init_main_conf)(ngx_conf_t *cf, void *conf);//初始化main级别配置项
 
-    void       *(*create_srv_conf)(ngx_conf_t *cf);
-    char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf);
+    void       *(*create_srv_conf)(ngx_conf_t *cf);//创建srv级别配置项
+    char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf);//合并main级别和src级别同名配置项
 
-    void       *(*create_loc_conf)(ngx_conf_t *cf);
-    char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);
+    void       *(*create_loc_conf)(ngx_conf_t *cf);//创建loc级别配置项
+    char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);//合并srv级别和loc级别下的同名配置项
 } ngx_http_module_t;
 
 
