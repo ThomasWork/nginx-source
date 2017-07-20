@@ -2,7 +2,8 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+#Here Documents
+#END可以替换为其他内容，使用这个语法来输入多行文本
 cat << END >> $NGX_AUTO_CONFIG_H
 
 #ifndef $have

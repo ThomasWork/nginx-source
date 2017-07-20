@@ -2,6 +2,8 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
+#该工具用来检测平台是否支持某些feature
+#首先输出一段代表性C程序，然后设置好编译选项，最后进行编译运行，再对结果进行分析。
 
 echo $ngx_n "checking for $ngx_feature ...$ngx_c"
 
@@ -12,7 +14,16 @@ checking for $ngx_feature
 
 END
 
-ngx_found=no
+# $ngx_feature 特性名称
+# $ngx_feature_name 特性的宏定义名称，如果特性测试成功，则会定义该宏定义
+# $ngx_feature_path 编译时需要查找的头文件目录
+# $ngx_feature_test 要执行的测试代码
+# $ngx_feature_incs 在代码中要include的头文件
+# $ngx_feature_libs 编译时需要link的库文件选项
+# $ngx_feature_run 编译成功后，对二进制文件需要做的动作，可以是yes，value，其它
+# $ngx_found 如果找到并测试成功，其值为yes，否则为no
+
+ngx_found=no #初始化结果为no
 
 if test -n "$ngx_feature_name"; then
     ngx_have_feature=`echo $ngx_feature_name \

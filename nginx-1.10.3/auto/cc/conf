@@ -34,7 +34,7 @@ ngx_spacer=
 ngx_long_regex_cont=$ngx_regex_cont
 ngx_long_cont=$ngx_cont
 
-. auto/cc/name
+. auto/cc/name #得到编译器名称
 
 if test -n "$CFLAGS"; then
 
